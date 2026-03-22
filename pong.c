@@ -60,46 +60,86 @@ int main() {
     clear();
     refresh();
 
-    //GAME SCREEN
+    //GAME AREA (Static)
     int center_y = rows / 2;
     int center_x = cols / 2;
-    mvprintw(0, 0, "Press ");
-    attron(A_BOLD);
-    mvprintw(0, 6, "Q");
-    attroff(A_BOLD);
-    mvprintw(0, 7, " to Quit");
-
-    for (int y_axis = 0; y_axis != rows + 1; y_axis++) 
-	mvprintw(y_axis, center_x, "|");  // Center Line
+	
+    //Ball variables
+    int ball_pos_x = cols / 2;
+    int ball_pos_y = rows / 2;
+    int ball_dx = 1;
+    int ball_dy = 1;
     
-    //Ball 
-    attron(A_BOLD);
-    mvprintw(center_y, center_x, "O");
-    attroff(A_BOLD);
-
-    //Player Paddle
-    mvprintw(center_y, 0, "|"); //At start
     int player_paddle_pos = center_y;
-    if (player_paddle_pos < rows - 1 && player_paddle_pos > 0){
+    int computer_paddle_pos = center_y;
+    
+    int player_score = 0, comp_score = 0;
+    timeout(50);
+
+    //GAME LOOP
+    clear();
+    while (1) {
+	//GAME AREA
+	clear();
+	mvprintw(0, 0, "Press ");
+	attron(A_BOLD);
+	mvprintw(0, 6, "Q");
+	attroff(A_BOLD);
+	mvprintw(0, 7, " to Quit");
+    
+	//Center Line
+	for (int y_axis = 1; y_axis != rows - 1; y_axis++) 
+	    mvprintw(y_axis, center_x, "|");  
+	//Borders
+	for (int x = 0; x != cols; x++){
+	    mvprintw(1, x, "-");
+	    mvprintw(rows - 2, x, "-");
+	}
+
+	//Score Board
+	mvprintw(rows - 1, cols/2 - 11, "Player = %d  Computer = %d", player_score, comp_score); 
+	//Ball 
+	attron(A_BOLD);
+	mvprintw(center_y, center_x, "O");
+	attroff(A_BOLD);
+
+	//Player Paddle
+	mvprintw(player_paddle_pos, 0, "|");
 	mvprintw(player_paddle_pos - 1, 0, "|");
 	mvprintw(player_paddle_pos + 1, 0, "|");
-    }
+    		
     
-    //Computer Paddle
-    mvprintw(center_y, cols - 1, "|");
-    int computer_paddle_pos = center_y;
-    if (computer_paddle_pos < rows - 1 && computer_paddle_pos > 0){
-	mvprintw(computer_paddle_pos - 1, cols - 1, "|");
-	mvprintw(computer_paddle_pos + 1, cols - 1, "|");
-    }
+	//Computer Paddle
+	mvprintw(center_y, cols - 1, "|");
+	if (computer_paddle_pos < rows - 1 && computer_paddle_pos > 0){
+	    mvprintw(computer_paddle_pos - 1, cols - 1, "|");
+	    mvprintw(computer_paddle_pos + 1, cols - 1, "|");
+	}
 
+	int command = getch();
+	int ball_pos_x = center_x, ball_pos_y = center_y;
+	switch (command) {
+		    
+	    case KEY_UP:
+		if (player_paddle_pos > 2)
+		    player_paddle_pos--;
+		break;
+	    case KEY_DOWN:
+                if (player_paddle_pos < rows - 3)
+		    player_paddle_pos++;
+		break;
+	    case 'q':
+	    case 'Q':
+		endwin();
+		printf("\033[?25h");
+		return 0;
 
-    refresh();
-    timeout(-1);
-    while (1){
-	int ch = getch();
-	if (ch == 'q' || ch == 'Q')
-	    break;
+	}
+	mvprintw(player_paddle_pos, 0, "|");
+	mvprintw(player_paddle_pos - 1, 0, "|");
+	mvprintw(player_paddle_pos + 1, 0, "|");
+	refresh();
+
     }
     
     endwin();
