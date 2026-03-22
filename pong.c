@@ -212,9 +212,9 @@ int main() {
 
 	if (ball_dx < 0 && ball_pos_x <= 1){
 	    if (abs(ball_pos_y - player_paddle_pos) <= 1){
-		ball_dx *= -1;
+		ball_dx = 1;
 		ball_dy = player_dy;
-		int diff = ball_pos_y - computer_paddle_pos;
+		int diff = ball_pos_y - player_paddle_pos;
 		ball_dy = diff;
 
 		if (ball_dy > 1) ball_dy = 1;
@@ -232,14 +232,17 @@ int main() {
 		computer_paddle_pos = rows / 2;
 		flushinp();
 		ball_dx = -1;
-		if (ball_dy == 0){
-		    ball_dy = (rand() % 2) ? 1 : -1;
-		}
+		if (ball_dy == 0)
+		
+		ball_dy = (rand() % 3) - 1;
+
+		if (ball_dy == 0)
+		    ball_dy = (rand() % 2) ? 1 : -1 ;
 	    }
 	}
 	else if (ball_dx > 0 && ball_pos_x == cols - 2){
 	    if (abs(ball_pos_y - computer_paddle_pos) <= 1){
-		ball_dx *= -1;
+		ball_dx = -1;
 		int diff = ball_pos_y - player_paddle_pos;
 		ball_dy = diff;
 
@@ -248,7 +251,7 @@ int main() {
 	    }
 	    else{
 		attron(A_BOLD);
-		mvprintw(ball_pos_y, ball_pos_x, "X");
+		mvprintw (ball_pos_y, ball_pos_x, "X");
 		attroff(A_BOLD);
 		player_score++;
 		napms(1000);
